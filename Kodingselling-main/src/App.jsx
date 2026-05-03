@@ -370,6 +370,7 @@ function ContactView() {
     full_name: '',
     age_job: '',
     email: '',
+    phone: '',
     service_preference: '',
     message: ''
   });
@@ -389,7 +390,7 @@ function ContactView() {
     }
     setFormStatus('success');
     setFormMessage('Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.');
-    setFormData({ full_name: '', age_job: '', email: '', service_preference: '', message: '' });
+    setFormData({ full_name: '', age_job: '', email: '', phone: '', service_preference: '', message: '' });
     setTimeout(() => {
       setFormStatus('idle');
       setFormMessage('');
@@ -419,7 +420,12 @@ function ContactView() {
 
             <div>
               <label className="block text-sm font-semibold text-slate-900 mb-2">E-Posta</label>
-              <input required type="email" value={formData.email} onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="ornek@sirket.com" />
+              <input type="email" value={formData.email} onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="ornek@sirket.com (opsiyonel)" />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-900 mb-2">Cep Telefonu</label>
+              <input required type="tel" value={formData.phone} onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="05xx xxx xx xx" />
             </div>
 
             <div>
@@ -681,9 +687,29 @@ function AdminView() {
 }
 
 function ContactTable({ rows }) {
+  const [search, setSearch] = useState('');
+  const [onlyToday, setOnlyToday] = useState(false);
+  const filteredRows = rows.filter((row) => {
+    const emailMatch = (row.email ?? '').toLowerCase().includes(search.toLowerCase());
+    const todayMatch = !onlyToday || new Date(row.created_at).toDateString() === new Date().toDateString();
+    return emailMatch && todayMatch;
+  });
+
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-6 overflow-auto">
       <h3 className="text-xl font-bold mb-4">İletişim Formu</h3>
+      <div className="flex flex-col md:flex-row gap-3 mb-4">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="E-postaya göre ara..."
+          className="border border-slate-300 rounded-lg px-3 py-2 text-sm"
+        />
+        <label className="inline-flex items-center text-sm text-slate-700 gap-2">
+          <input type="checkbox" checked={onlyToday} onChange={(e) => setOnlyToday(e.target.checked)} />
+          Sadece bugün gelenler
+        </label>
+      </div>
       <table className="w-full text-sm">
         <thead>
           <tr className="text-left border-b border-slate-200">
@@ -691,21 +717,28 @@ function ContactTable({ rows }) {
             <th className="py-2 pr-3">Ad Soyad</th>
             <th className="py-2 pr-3">Yaş / Meslek</th>
             <th className="py-2 pr-3">E-Posta</th>
+            <th className="py-2 pr-3">Cep Telefonu</th>
             <th className="py-2 pr-3">Hizmet</th>
             <th className="py-2 pr-3">Mesaj</th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
+          {filteredRows.map((row) => (
             <tr key={row.id} className="border-b border-slate-100 align-top">
               <td className="py-2 pr-3 text-slate-500">{new Date(row.created_at).toLocaleString('tr-TR')}</td>
               <td className="py-2 pr-3 font-medium">{row.full_name}</td>
               <td className="py-2 pr-3">{row.age_job}</td>
               <td className="py-2 pr-3">{row.email}</td>
+              <td className="py-2 pr-3">{row.phone}</td>
               <td className="py-2 pr-3">{row.service_preference}</td>
               <td className="py-2 pr-3 whitespace-pre-wrap">{row.message}</td>
             </tr>
           ))}
+          {!filteredRows.length && (
+            <tr>
+              <td colSpan="7" className="py-3 text-slate-500">Filtreye uygun kayıt bulunamadı.</td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

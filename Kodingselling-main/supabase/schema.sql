@@ -4,11 +4,16 @@ create table if not exists public.contact_messages (
   id bigint generated always as identity primary key,
   full_name text not null,
   age_job text not null,
-  email text not null,
+  email text,
+  phone text not null,
   service_preference text,
   message text not null,
   created_at timestamptz default now()
 );
+
+alter table public.contact_messages add column if not exists phone text;
+alter table public.contact_messages alter column phone set not null;
+alter table public.contact_messages alter column email drop not null;
 
 create table if not exists public.chat_messages (
   id bigint generated always as identity primary key,
