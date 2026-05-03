@@ -7,6 +7,7 @@ import {
   MapPin, Mail, Phone, Clock, MessageSquare,
   Send, X, Menu, ChevronDown, ChevronUp
 } from 'lucide-react';
+import { supabase, supabaseConfig } from './lib/supabase';
 
 // --- DATA ---
 
@@ -166,14 +167,19 @@ export default function App() {
         {activeTab === 'expertise' && <ExpertiseView />}
         {activeTab === 'about' && <AboutView />}
         {activeTab === 'contact' && <ContactView />}
+        {activeTab === 'admin' && <AdminView />}
       </main>
 
       <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <span className="text-2xl font-extrabold tracking-tighter text-white lowercase">
+            <button
+              type="button"
+              onClick={() => nav('admin')}
+              className="text-2xl font-extrabold tracking-tighter text-white lowercase hover:text-indigo-300 transition-colors"
+            >
               d&p<span className="text-emerald-500">.</span>
-            </span>
+            </button>
             <p className="text-sm mt-2">Ruhsal denge ve sürdürülebilir beslenmeyi aynı çatı altında buluşturuyoruz.</p>
           </div>
           <div className="text-sm">&copy; {new Date().getFullYear()} D&P Psikoloji ve Beslenme Merkezi. Tüm Hakları Saklıdır.</div>
@@ -359,14 +365,36 @@ function AboutView() {
 
 function ContactView() {
   const [formStatus, setFormStatus] = useState('idle');
+  const [formMessage, setFormMessage] = useState('');
+  const [formData, setFormData] = useState({
+    full_name: '',
+    age_job: '',
+    email: '',
+    phone: '',
+    service_preference: '',
+    message: ''
+  });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormMessage('');
     setFormStatus('sending');
+    const { error } = await supabase.insert('contact_messages', {
+      ...formData,
+      created_at: new Date().toISOString()
+    });
+    if (error) {
+      setFormStatus('idle');
+      setFormMessage('Mesaj gönderilemedi. Lütfen tekrar deneyin.');
+      return;
+    }
+    setFormStatus('success');
+    setFormMessage('Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.');
+    setFormData({ full_name: '', age_job: '', email: '', phone: '', service_preference: '', message: '' });
     setTimeout(() => {
-      setFormStatus('success');
-      setTimeout(() => setFormStatus('idle'), 3000);
-    }, 1500);
+      setFormStatus('idle');
+      setFormMessage('');
+    }, 3000);
   };
 
   return (
@@ -382,22 +410,27 @@ function ContactView() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Ad Soyad</label>
-                <input required type="text" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="John Doe" />
+                <input required type="text" value={formData.full_name} onChange={(e) => setFormData((p) => ({ ...p, full_name: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="John Doe" />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Yaş / Meslek</label>
-                <input required type="text" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="Örn. 32 / Öğretmen" />
+                <input required type="text" value={formData.age_job} onChange={(e) => setFormData((p) => ({ ...p, age_job: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="Örn. 32 / Öğretmen" />
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-slate-900 mb-2">E-Posta</label>
-              <input required type="email" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="ornek@sirket.com" />
+              <input type="email" value={formData.email} onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="ornek@sirket.com (opsiyonel)" />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-900 mb-2">Cep Telefonu</label>
+              <input required type="tel" value={formData.phone} onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="05xx xxx xx xx" />
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-slate-900 mb-2">Hizmet Tercihi</label>
-              <select className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors text-slate-700">
+              <select value={formData.service_preference} onChange={(e) => setFormData((p) => ({ ...p, service_preference: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors text-slate-700">
                 <option>Seçiniz...</option>
                 <option>Bireysel Psikolojik Danışmanlık</option>
                 <option>Kişiye Özel Diyet Programı</option>
@@ -410,7 +443,7 @@ function ContactView() {
 
             <div>
               <label className="block text-sm font-semibold text-slate-900 mb-2">Kısaca İhtiyacınız</label>
-              <textarea required rows="4" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors resize-none" placeholder="Hedefinizi, yaşadığınız zorlukları ve beklentinizi paylaşın..."></textarea>
+              <textarea required rows="4" value={formData.message} onChange={(e) => setFormData((p) => ({ ...p, message: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors resize-none" placeholder="Hedefinizi, yaşadığınız zorlukları ve beklentinizi paylaşın..."></textarea>
             </div>
 
             <button
@@ -426,6 +459,11 @@ function ContactView() {
                 </span>
               )}
             </button>
+            {formMessage && (
+              <p className={`text-sm font-medium ${formStatus === 'success' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                {formMessage}
+              </p>
+            )}
           </form>
         </div>
 
@@ -497,19 +535,24 @@ function ChatWidget() {
     if (isOpen) scrollToBottom();
   }, [messages, isOpen]);
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
     const newMsg = { text: inputValue, sender: 'user', time: new Date() };
     setMessages((prev) => [...prev, newMsg]);
+    await supabase.insert('chat_messages', {
+      message: inputValue,
+      sender: 'user',
+      created_at: new Date().toISOString()
+    });
     setInputValue('');
 
     setTimeout(() => {
       setMessages((prev) => [
         ...prev,
         {
-          text: 'Mesajınız bize ulaştı 💚 İhtiyacınızı paylaşırsanız uzman ekibimiz size uygun programı belirleyip en kısa sürede dönüş sağlayacaktır.',
+          text: 'Mesajınız bize ulaştı 💚 Lütfen telefon numaranızı veya e-posta adresinizi de bırakın; uzman ekibimiz size en kısa sürede dönüş sağlasın.',
           sender: 'bot',
           time: new Date()
         }
@@ -585,6 +628,139 @@ function ChatWidget() {
           </span>
         )}
       </button>
+    </div>
+  );
+}
+
+function AdminView() {
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [contactRows, setContactRows] = useState([]);
+  const [chatRows, setChatRows] = useState([]);
+  const [adminError, setAdminError] = useState('');
+
+  const login = (e) => {
+    e.preventDefault();
+    if (username === supabaseConfig.adminUser && password === supabaseConfig.adminPass) {
+      setIsAuthed(true);
+    }
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (!isAuthed || !supabase) return;
+      setAdminError('');
+      const [contacts, chats] = await Promise.all([
+        supabase.list('contact_messages', { limit: 20 }),
+        supabase.list('chat_messages', { limit: 30 })
+      ]);
+      if (contacts.error || chats.error) {
+        setAdminError('Kayıtlar yüklenemedi. Supabase RLS policy ayarlarını kontrol edin.');
+      }
+      setContactRows(contacts.data ?? []);
+      setChatRows(chats.data ?? []);
+    };
+    loadData();
+  }, [isAuthed]);
+
+  if (!isAuthed) {
+    return (
+      <div className="max-w-lg mx-auto bg-white border border-slate-200 rounded-2xl p-8">
+        <h2 className="text-2xl font-bold mb-4">Admin Girişi</h2>
+        <form onSubmit={login} className="space-y-4">
+          <input className="w-full border rounded-lg px-3 py-2" placeholder="Admin" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <input type="password" className="w-full border rounded-lg px-3 py-2" placeholder="Şifre" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <button type="submit" className="w-full py-2 bg-slate-900 text-white rounded-lg">Giriş Yap</button>
+        </form>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      {adminError && <p className="text-sm font-medium text-rose-600">{adminError}</p>}
+      <ContactTable rows={contactRows} />
+      <ChatTable rows={chatRows} />
+    </div>
+  );
+}
+
+function ContactTable({ rows }) {
+  const [search, setSearch] = useState('');
+  const [onlyToday, setOnlyToday] = useState(false);
+  const filteredRows = rows.filter((row) => {
+    const emailMatch = (row.email ?? '').toLowerCase().includes(search.toLowerCase());
+    const todayMatch = !onlyToday || new Date(row.created_at).toDateString() === new Date().toDateString();
+    return emailMatch && todayMatch;
+  });
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl p-6 overflow-auto">
+      <h3 className="text-xl font-bold mb-4">İletişim Formu</h3>
+      <div className="flex flex-col md:flex-row gap-3 mb-4">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="E-postaya göre ara..."
+          className="border border-slate-300 rounded-lg px-3 py-2 text-sm"
+        />
+        <label className="inline-flex items-center text-sm text-slate-700 gap-2">
+          <input type="checkbox" checked={onlyToday} onChange={(e) => setOnlyToday(e.target.checked)} />
+          Sadece bugün gelenler
+        </label>
+      </div>
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-left border-b border-slate-200">
+            <th className="py-2 pr-3">Tarih</th>
+            <th className="py-2 pr-3">Ad Soyad</th>
+            <th className="py-2 pr-3">Yaş / Meslek</th>
+            <th className="py-2 pr-3">E-Posta</th>
+            <th className="py-2 pr-3">Cep Telefonu</th>
+            <th className="py-2 pr-3">Hizmet</th>
+            <th className="py-2 pr-3">Mesaj</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredRows.map((row) => (
+            <tr key={row.id} className="border-b border-slate-100 align-top">
+              <td className="py-2 pr-3 text-slate-500">{new Date(row.created_at).toLocaleString('tr-TR')}</td>
+              <td className="py-2 pr-3 font-medium">{row.full_name}</td>
+              <td className="py-2 pr-3">{row.age_job}</td>
+              <td className="py-2 pr-3">{row.email}</td>
+              <td className="py-2 pr-3">{row.phone}</td>
+              <td className="py-2 pr-3">{row.service_preference}</td>
+              <td className="py-2 pr-3 whitespace-pre-wrap">{row.message}</td>
+            </tr>
+          ))}
+          {!filteredRows.length && (
+            <tr>
+              <td colSpan="7" className="py-3 text-slate-500">Filtreye uygun kayıt bulunamadı.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function ChatTable({ rows }) {
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl p-6 overflow-auto">
+      <h3 className="text-xl font-bold mb-4">Chat Mesajları</h3>
+      <div className="space-y-3">
+        {rows.map((row) => (
+          <div key={row.id} className="rounded-xl border border-slate-200 p-3 bg-slate-50">
+            <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
+              <span className="font-semibold uppercase tracking-wide">{row.sender}</span>
+              <span>{new Date(row.created_at).toLocaleString('tr-TR')}</span>
+            </div>
+            <p className="text-sm text-slate-800 whitespace-pre-wrap">{row.message}</p>
+          </div>
+        ))}
+        {!rows.length && <p className="text-sm text-slate-500">Henüz chat mesajı yok.</p>}
+      </div>
     </div>
   );
 }
