@@ -546,7 +546,7 @@ function ChatWidget() {
       setMessages((prev) => [
         ...prev,
         {
-          text: 'Mesajınız bize ulaştı 💚 İhtiyacınızı paylaşırsanız uzman ekibimiz size uygun programı belirleyip en kısa sürede dönüş sağlayacaktır.',
+          text: 'Mesajınız bize ulaştı 💚 Lütfen telefon numaranızı veya e-posta adresinizi de bırakın; uzman ekibimiz size en kısa sürede dönüş sağlasın.',
           sender: 'bot',
           time: new Date()
         }
@@ -674,17 +674,60 @@ function AdminView() {
   return (
     <div className="space-y-8">
       {adminError && <p className="text-sm font-medium text-rose-600">{adminError}</p>}
-      <DataTable title="İletişim Formu" rows={contactRows} />
-      <DataTable title="Chat Mesajları" rows={chatRows} />
+      <ContactTable rows={contactRows} />
+      <ChatTable rows={chatRows} />
     </div>
   );
 }
 
-function DataTable({ title, rows }) {
+function ContactTable({ rows }) {
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-6 overflow-auto">
-      <h3 className="text-xl font-bold mb-4">{title}</h3>
-      <pre className="text-xs bg-slate-50 p-3 rounded-xl">{JSON.stringify(rows, null, 2)}</pre>
+      <h3 className="text-xl font-bold mb-4">İletişim Formu</h3>
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-left border-b border-slate-200">
+            <th className="py-2 pr-3">Tarih</th>
+            <th className="py-2 pr-3">Ad Soyad</th>
+            <th className="py-2 pr-3">Yaş / Meslek</th>
+            <th className="py-2 pr-3">E-Posta</th>
+            <th className="py-2 pr-3">Hizmet</th>
+            <th className="py-2 pr-3">Mesaj</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.id} className="border-b border-slate-100 align-top">
+              <td className="py-2 pr-3 text-slate-500">{new Date(row.created_at).toLocaleString('tr-TR')}</td>
+              <td className="py-2 pr-3 font-medium">{row.full_name}</td>
+              <td className="py-2 pr-3">{row.age_job}</td>
+              <td className="py-2 pr-3">{row.email}</td>
+              <td className="py-2 pr-3">{row.service_preference}</td>
+              <td className="py-2 pr-3 whitespace-pre-wrap">{row.message}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function ChatTable({ rows }) {
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl p-6 overflow-auto">
+      <h3 className="text-xl font-bold mb-4">Chat Mesajları</h3>
+      <div className="space-y-3">
+        {rows.map((row) => (
+          <div key={row.id} className="rounded-xl border border-slate-200 p-3 bg-slate-50">
+            <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
+              <span className="font-semibold uppercase tracking-wide">{row.sender}</span>
+              <span>{new Date(row.created_at).toLocaleString('tr-TR')}</span>
+            </div>
+            <p className="text-sm text-slate-800 whitespace-pre-wrap">{row.message}</p>
+          </div>
+        ))}
+        {!rows.length && <p className="text-sm text-slate-500">Henüz chat mesajı yok.</p>}
+      </div>
     </div>
   );
 }
