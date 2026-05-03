@@ -11,10 +11,13 @@ npm run dev
 
 ## Vercel + Supabase Environment Variables
 
-Vercel'de **Project Settings → Environment Variables** bölümüne aşağıdaki anahtarları ekleyin (**Vite için `VITE_` prefix zorunludur**):
+Vercel'de **Project Settings → Environment Variables** bölümüne aşağıdaki anahtarları ekleyin.
+Bu projede hem `VITE_*` hem `NEXT_PUBLIC_*` prefix'leri desteklenir:
 
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `VITE_ADMIN`
 - `VITE_PASS`
 
