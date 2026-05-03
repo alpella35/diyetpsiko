@@ -11,10 +11,10 @@ npm run dev
 
 ## Vercel + Supabase Environment Variables
 
-Vercel'de **Project Settings → Environment Variables** bölümüne aşağıdaki anahtarları ekleyin:
+Vercel'de **Project Settings → Environment Variables** bölümüne aşağıdaki anahtarları ekleyin (**Vite için `VITE_` prefix zorunludur**):
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
 - `VITE_ADMIN`
 - `VITE_PASS`
 
@@ -40,4 +40,5 @@ create table if not exists chat_messages (
 ```
 
 
-SQL dosyası: `supabase/schema.sql`
+SQL dosyası: `supabase/schema.sql`  
+Not: Önceki policy'leri güncellemek için bu SQL'i tekrar çalıştırın.

@@ -365,6 +365,7 @@ function AboutView() {
 
 function ContactView() {
   const [formStatus, setFormStatus] = useState('idle');
+  const [formMessage, setFormMessage] = useState('');
   const [formData, setFormData] = useState({
     full_name: '',
     age_job: '',
@@ -375,6 +376,7 @@ function ContactView() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormMessage('');
     setFormStatus('sending');
     const { error } = await supabase.insert('contact_messages', {
       ...formData,
@@ -382,11 +384,16 @@ function ContactView() {
     });
     if (error) {
       setFormStatus('idle');
+      setFormMessage('Mesaj gönderilemedi. Lütfen tekrar deneyin.');
       return;
     }
     setFormStatus('success');
+    setFormMessage('Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.');
     setFormData({ full_name: '', age_job: '', email: '', service_preference: '', message: '' });
-    setTimeout(() => setFormStatus('idle'), 3000);
+    setTimeout(() => {
+      setFormStatus('idle');
+      setFormMessage('');
+    }, 3000);
   };
 
   return (
@@ -446,6 +453,11 @@ function ContactView() {
                 </span>
               )}
             </button>
+            {formMessage && (
+              <p className={`text-sm font-medium ${formStatus === 'success' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                {formMessage}
+              </p>
+            )}
           </form>
         </div>
 
@@ -620,6 +632,7 @@ function AdminView() {
   const [password, setPassword] = useState('');
   const [contactRows, setContactRows] = useState([]);
   const [chatRows, setChatRows] = useState([]);
+  const [adminError, setAdminError] = useState('');
 
   const login = (e) => {
     e.preventDefault();
@@ -631,10 +644,14 @@ function AdminView() {
   useEffect(() => {
     const loadData = async () => {
       if (!isAuthed || !supabase) return;
+      setAdminError('');
       const [contacts, chats] = await Promise.all([
         supabase.list('contact_messages', { limit: 20 }),
         supabase.list('chat_messages', { limit: 30 })
       ]);
+      if (contacts.error || chats.error) {
+        setAdminError('Kayıtlar yüklenemedi. Supabase RLS policy ayarlarını kontrol edin.');
+      }
       setContactRows(contacts.data ?? []);
       setChatRows(chats.data ?? []);
     };
@@ -654,7 +671,13 @@ function AdminView() {
     );
   }
 
-  return <div className="space-y-8"><DataTable title="İletişim Formu" rows={contactRows} /><DataTable title="Chat Mesajları" rows={chatRows} /></div>;
+  return (
+    <div className="space-y-8">
+      {adminError && <p className="text-sm font-medium text-rose-600">{adminError}</p>}
+      <DataTable title="İletişim Formu" rows={contactRows} />
+      <DataTable title="Chat Mesajları" rows={chatRows} />
+    </div>
+  );
 }
 
 function DataTable({ title, rows }) {

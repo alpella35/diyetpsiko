@@ -36,17 +36,17 @@ for insert
 to anon
 with check (true);
 
--- Allow authenticated reads (admin panel can be moved server-side later)
-drop policy if exists "auth_select_contact" on public.contact_messages;
-create policy "auth_select_contact"
+-- Allow frontend admin page reads with anon key (access is gated in UI by VITE_ADMIN/VITE_PASS)
+drop policy if exists "anon_select_contact" on public.contact_messages;
+create policy "anon_select_contact"
 on public.contact_messages
 for select
-to authenticated
+to anon
 using (true);
 
-drop policy if exists "auth_select_chat" on public.chat_messages;
-create policy "auth_select_chat"
+drop policy if exists "anon_select_chat" on public.chat_messages;
+create policy "anon_select_chat"
 on public.chat_messages
 for select
-to authenticated
+to anon
 using (true);
