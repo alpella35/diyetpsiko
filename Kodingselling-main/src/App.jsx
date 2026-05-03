@@ -7,6 +7,7 @@ import {
   MapPin, Mail, Phone, Clock, MessageSquare,
   Send, X, Menu, ChevronDown, ChevronUp
 } from 'lucide-react';
+import { supabase, supabaseConfig } from './lib/supabase';
 
 // --- DATA ---
 
@@ -166,14 +167,19 @@ export default function App() {
         {activeTab === 'expertise' && <ExpertiseView />}
         {activeTab === 'about' && <AboutView />}
         {activeTab === 'contact' && <ContactView />}
+        {activeTab === 'admin' && <AdminView />}
       </main>
 
       <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <span className="text-2xl font-extrabold tracking-tighter text-white lowercase">
+            <button
+              type="button"
+              onClick={() => nav('admin')}
+              className="text-2xl font-extrabold tracking-tighter text-white lowercase hover:text-indigo-300 transition-colors"
+            >
               d&p<span className="text-emerald-500">.</span>
-            </span>
+            </button>
             <p className="text-sm mt-2">Ruhsal denge ve sürdürülebilir beslenmeyi aynı çatı altında buluşturuyoruz.</p>
           </div>
           <div className="text-sm">&copy; {new Date().getFullYear()} D&P Psikoloji ve Beslenme Merkezi. Tüm Hakları Saklıdır.</div>
@@ -359,14 +365,28 @@ function AboutView() {
 
 function ContactView() {
   const [formStatus, setFormStatus] = useState('idle');
+  const [formData, setFormData] = useState({
+    full_name: '',
+    age_job: '',
+    email: '',
+    service_preference: '',
+    message: ''
+  });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setFormStatus('sending');
-    setTimeout(() => {
-      setFormStatus('success');
-      setTimeout(() => setFormStatus('idle'), 3000);
-    }, 1500);
+    const { error } = await supabase.insert('contact_messages', {
+      ...formData,
+      created_at: new Date().toISOString()
+    });
+    if (error) {
+      setFormStatus('idle');
+      return;
+    }
+    setFormStatus('success');
+    setFormData({ full_name: '', age_job: '', email: '', service_preference: '', message: '' });
+    setTimeout(() => setFormStatus('idle'), 3000);
   };
 
   return (
@@ -382,22 +402,22 @@ function ContactView() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Ad Soyad</label>
-                <input required type="text" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="John Doe" />
+                <input required type="text" value={formData.full_name} onChange={(e) => setFormData((p) => ({ ...p, full_name: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="John Doe" />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Yaş / Meslek</label>
-                <input required type="text" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="Örn. 32 / Öğretmen" />
+                <input required type="text" value={formData.age_job} onChange={(e) => setFormData((p) => ({ ...p, age_job: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="Örn. 32 / Öğretmen" />
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-slate-900 mb-2">E-Posta</label>
-              <input required type="email" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="ornek@sirket.com" />
+              <input required type="email" value={formData.email} onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="ornek@sirket.com" />
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-slate-900 mb-2">Hizmet Tercihi</label>
-              <select className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors text-slate-700">
+              <select value={formData.service_preference} onChange={(e) => setFormData((p) => ({ ...p, service_preference: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors text-slate-700">
                 <option>Seçiniz...</option>
                 <option>Bireysel Psikolojik Danışmanlık</option>
                 <option>Kişiye Özel Diyet Programı</option>
@@ -410,7 +430,7 @@ function ContactView() {
 
             <div>
               <label className="block text-sm font-semibold text-slate-900 mb-2">Kısaca İhtiyacınız</label>
-              <textarea required rows="4" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors resize-none" placeholder="Hedefinizi, yaşadığınız zorlukları ve beklentinizi paylaşın..."></textarea>
+              <textarea required rows="4" value={formData.message} onChange={(e) => setFormData((p) => ({ ...p, message: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors resize-none" placeholder="Hedefinizi, yaşadığınız zorlukları ve beklentinizi paylaşın..."></textarea>
             </div>
 
             <button
@@ -497,12 +517,17 @@ function ChatWidget() {
     if (isOpen) scrollToBottom();
   }, [messages, isOpen]);
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
     const newMsg = { text: inputValue, sender: 'user', time: new Date() };
     setMessages((prev) => [...prev, newMsg]);
+    await supabase.insert('chat_messages', {
+      message: inputValue,
+      sender: 'user',
+      created_at: new Date().toISOString()
+    });
     setInputValue('');
 
     setTimeout(() => {
@@ -585,6 +610,58 @@ function ChatWidget() {
           </span>
         )}
       </button>
+    </div>
+  );
+}
+
+function AdminView() {
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [contactRows, setContactRows] = useState([]);
+  const [chatRows, setChatRows] = useState([]);
+
+  const login = (e) => {
+    e.preventDefault();
+    if (username === supabaseConfig.adminUser && password === supabaseConfig.adminPass) {
+      setIsAuthed(true);
+    }
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (!isAuthed || !supabase) return;
+      const [contacts, chats] = await Promise.all([
+        supabase.list('contact_messages', { limit: 20 }),
+        supabase.list('chat_messages', { limit: 30 })
+      ]);
+      setContactRows(contacts.data ?? []);
+      setChatRows(chats.data ?? []);
+    };
+    loadData();
+  }, [isAuthed]);
+
+  if (!isAuthed) {
+    return (
+      <div className="max-w-lg mx-auto bg-white border border-slate-200 rounded-2xl p-8">
+        <h2 className="text-2xl font-bold mb-4">Admin Girişi</h2>
+        <form onSubmit={login} className="space-y-4">
+          <input className="w-full border rounded-lg px-3 py-2" placeholder="Admin" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <input type="password" className="w-full border rounded-lg px-3 py-2" placeholder="Şifre" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <button type="submit" className="w-full py-2 bg-slate-900 text-white rounded-lg">Giriş Yap</button>
+        </form>
+      </div>
+    );
+  }
+
+  return <div className="space-y-8"><DataTable title="İletişim Formu" rows={contactRows} /><DataTable title="Chat Mesajları" rows={chatRows} /></div>;
+}
+
+function DataTable({ title, rows }) {
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl p-6 overflow-auto">
+      <h3 className="text-xl font-bold mb-4">{title}</h3>
+      <pre className="text-xs bg-slate-50 p-3 rounded-xl">{JSON.stringify(rows, null, 2)}</pre>
     </div>
   );
 }
