@@ -38,3 +38,6 @@ create table if not exists chat_messages (
   created_at timestamptz default now()
 );
 ```
+
+
+SQL dosyası: `supabase/schema.sql`

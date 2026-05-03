@@ -1,0 +1,52 @@
+-- Run this in Supabase SQL Editor
+
+create table if not exists public.contact_messages (
+  id bigint generated always as identity primary key,
+  full_name text not null,
+  age_job text not null,
+  email text not null,
+  service_preference text,
+  message text not null,
+  created_at timestamptz default now()
+);
+
+create table if not exists public.chat_messages (
+  id bigint generated always as identity primary key,
+  message text not null,
+  sender text not null,
+  created_at timestamptz default now()
+);
+
+-- Enable RLS
+alter table public.contact_messages enable row level security;
+alter table public.chat_messages enable row level security;
+
+-- Allow anonymous inserts (for website form/chat)
+drop policy if exists "anon_insert_contact" on public.contact_messages;
+create policy "anon_insert_contact"
+on public.contact_messages
+for insert
+to anon
+with check (true);
+
+drop policy if exists "anon_insert_chat" on public.chat_messages;
+create policy "anon_insert_chat"
+on public.chat_messages
+for insert
+to anon
+with check (true);
+
+-- Allow authenticated reads (admin panel can be moved server-side later)
+drop policy if exists "auth_select_contact" on public.contact_messages;
+create policy "auth_select_contact"
+on public.contact_messages
+for select
+to authenticated
+using (true);
+
+drop policy if exists "auth_select_chat" on public.chat_messages;
+create policy "auth_select_chat"
+on public.chat_messages
+for select
+to authenticated
+using (true);
