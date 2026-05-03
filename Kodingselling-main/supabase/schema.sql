@@ -12,6 +12,9 @@ create table if not exists public.contact_messages (
 );
 
 alter table public.contact_messages add column if not exists phone text;
+update public.contact_messages
+set phone = coalesce(nullif(trim(phone), ''), '-')
+where phone is null or trim(phone) = '';
 alter table public.contact_messages alter column phone set not null;
 alter table public.contact_messages alter column email drop not null;
 
