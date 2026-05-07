@@ -493,7 +493,7 @@ function ContactView() {
                   <Phone className="w-6 h-6 text-indigo-400 mt-1 mr-4 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-slate-200">Telefon</p>
-                    <p className="text-slate-400 mt-1">+90 (232) 000 00 00</p>
+                    <p className="text-slate-400 mt-1">+90 (555) 2083092</p>
                   </div>
                 </div>
 
