@@ -103,10 +103,10 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center cursor-pointer group" onClick={() => nav('home')}>
-              <span className="text-3xl font-extrabold tracking-tighter text-slate-900 lowercase group-hover:text-indigo-950 transition-colors">
+              <span className="text-4xl font-extrabold tracking-tighter text-slate-900 lowercase group-hover:text-indigo-950 transition-colors">
                 d&p
               </span>
-              <span className="text-4xl text-emerald-500 leading-none">.</span>
+              <span className="text-5xl text-emerald-500 leading-none">.</span>
             </div>
 
             <div className="hidden md:flex space-x-8">
@@ -176,7 +176,7 @@ export default function App() {
             <button
               type="button"
               onClick={() => nav('admin')}
-              className="text-2xl font-extrabold tracking-tighter text-white lowercase hover:text-indigo-300 transition-colors"
+              className="text-3xl font-extrabold tracking-tighter text-white lowercase hover:text-indigo-300 transition-colors"
             >
               d&p<span className="text-emerald-500">.</span>
             </button>
@@ -331,7 +331,7 @@ function AboutView() {
         <div className="p-10 md:p-14 relative">
           <div className="absolute -top-12 left-10 w-24 h-24 bg-white rounded-2xl shadow-lg border border-slate-100 flex items-center justify-center">
             <span className="text-2xl font-extrabold text-slate-900 lowercase">
-              dzy<span className="text-emerald-500">.</span>
+              d&p<span className="text-emerald-500">.</span>
             </span>
           </div>
 
@@ -410,7 +410,7 @@ function ContactView() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Ad Soyad</label>
-                <input required type="text" value={formData.full_name} onChange={(e) => setFormData((p) => ({ ...p, full_name: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="John Doe" />
+                <input required type="text" value={formData.full_name} onChange={(e) => setFormData((p) => ({ ...p, full_name: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="Ayşe Yılmaz" />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Yaş / Meslek</label>
@@ -493,7 +493,7 @@ function ContactView() {
                   <Phone className="w-6 h-6 text-indigo-400 mt-1 mr-4 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-slate-200">Telefon</p>
-                    <p className="text-slate-400 mt-1">+90 (232) 000 00 00</p>
+                    <p className="text-slate-400 mt-1">+90 (555) 2083092</p>
                   </div>
                 </div>
 
@@ -509,7 +509,7 @@ function ContactView() {
 
             <div className="mt-12 pt-8 border-t border-slate-800">
               <span className="text-3xl font-extrabold tracking-tighter text-white lowercase">
-                dzy<span className="text-emerald-500">.</span>
+                d&p<span className="text-emerald-500">.</span>
               </span>
             </div>
           </div>
