@@ -103,10 +103,10 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center cursor-pointer group" onClick={() => nav('home')}>
-              <span className="text-3xl font-extrabold tracking-tighter text-slate-900 lowercase group-hover:text-indigo-950 transition-colors">
+              <span className="text-4xl font-extrabold tracking-tighter text-slate-900 lowercase group-hover:text-indigo-950 transition-colors">
                 d&p
               </span>
-              <span className="text-4xl text-emerald-500 leading-none">.</span>
+              <span className="text-5xl text-emerald-500 leading-none">.</span>
             </div>
 
             <div className="hidden md:flex space-x-8">
@@ -176,7 +176,7 @@ export default function App() {
             <button
               type="button"
               onClick={() => nav('admin')}
-              className="text-2xl font-extrabold tracking-tighter text-white lowercase hover:text-indigo-300 transition-colors"
+              className="text-3xl font-extrabold tracking-tighter text-white lowercase hover:text-indigo-300 transition-colors"
             >
               d&p<span className="text-emerald-500">.</span>
             </button>
@@ -410,7 +410,7 @@ function ContactView() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Ad Soyad</label>
-                <input required type="text" value={formData.full_name} onChange={(e) => setFormData((p) => ({ ...p, full_name: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="John Doe" />
+                <input required type="text" value={formData.full_name} onChange={(e) => setFormData((p) => ({ ...p, full_name: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="Ayşe Yılmaz" />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Yaş / Meslek</label>
@@ -642,9 +642,20 @@ function AdminView() {
 
   const login = (e) => {
     e.preventDefault();
+    const hasAdminCredentials = Boolean(supabaseConfig.adminUser && supabaseConfig.adminPass);
+
+    if (!hasAdminCredentials) {
+      setAdminError('Admin girişi için VITE_ADMIN ve VITE_PASS ortam değişkenlerini tanımlayın.');
+      return;
+    }
+
     if (username === supabaseConfig.adminUser && password === supabaseConfig.adminPass) {
       setIsAuthed(true);
+      setAdminError('');
+      return;
     }
+
+    setAdminError('Kullanıcı adı veya şifre hatalı.');
   };
 
   useEffect(() => {
@@ -669,6 +680,7 @@ function AdminView() {
       <div className="max-w-lg mx-auto bg-white border border-slate-200 rounded-2xl p-8">
         <h2 className="text-2xl font-bold mb-4">Admin Girişi</h2>
         <form onSubmit={login} className="space-y-4">
+          {adminError && <p className="text-sm font-medium text-rose-600">{adminError}</p>}
           <input className="w-full border rounded-lg px-3 py-2" placeholder="Admin" value={username} onChange={(e) => setUsername(e.target.value)} />
           <input type="password" className="w-full border rounded-lg px-3 py-2" placeholder="Şifre" value={password} onChange={(e) => setPassword(e.target.value)} />
           <button type="submit" className="w-full py-2 bg-slate-900 text-white rounded-lg">Giriş Yap</button>
