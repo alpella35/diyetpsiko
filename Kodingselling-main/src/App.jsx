@@ -331,7 +331,7 @@ function AboutView() {
         <div className="p-10 md:p-14 relative">
           <div className="absolute -top-12 left-10 w-24 h-24 bg-white rounded-2xl shadow-lg border border-slate-100 flex items-center justify-center">
             <span className="text-2xl font-extrabold text-slate-900 lowercase">
-              dzy<span className="text-emerald-500">.</span>
+              d&p<span className="text-emerald-500">.</span>
             </span>
           </div>
 
@@ -493,7 +493,7 @@ function ContactView() {
                   <Phone className="w-6 h-6 text-indigo-400 mt-1 mr-4 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-slate-200">Telefon</p>
-                    <p className="text-slate-400 mt-1">+90 (232) 000 00 00</p>
+                    <p className="text-slate-400 mt-1">+90 555 208 3092</p>
                   </div>
                 </div>
 
@@ -509,7 +509,7 @@ function ContactView() {
 
             <div className="mt-12 pt-8 border-t border-slate-800">
               <span className="text-3xl font-extrabold tracking-tighter text-white lowercase">
-                dzy<span className="text-emerald-500">.</span>
+                d&p<span className="text-emerald-500">.</span>
               </span>
             </div>
           </div>
