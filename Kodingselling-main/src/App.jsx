@@ -161,7 +161,7 @@ export default function App() {
         )}
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {activeTab === 'home' && <HomeView nav={nav} />}
         {activeTab === 'services' && <ServicesView />}
         {activeTab === 'expertise' && <ExpertiseView />}
@@ -182,7 +182,7 @@ export default function App() {
             </button>
             <p className="text-sm mt-2">Ruhsal denge ve sürdürülebilir beslenmeyi aynı çatı altında buluşturuyoruz.</p>
           </div>
-          <div className="text-sm">&copy; {new Date().getFullYear()} D&P Psikoloji ve Beslenme Merkezi. Tüm Hakları Saklıdır.</div>
+          <div className="text-sm text-center md:text-right">&copy; {new Date().getFullYear()} D&P Psikoloji ve Beslenme Merkezi. Tüm Hakları Saklıdır.</div>
         </div>
       </footer>
 
@@ -206,16 +206,16 @@ function HomeView({ nav }) {
           <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
           Bilimsel Yaklaşımla Bütüncül İyi Oluş
         </div>
-        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
           Psikolog ve Diyetisyen Desteğiyle<br className="hidden md:block" /> {' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-fuchsia-600">Dengeli Bir Zihin ve Sağlıklı Bir Yaşam</span> İnşa Ediyoruz.
         </h1>
-        <p className="text-xl text-slate-600 mb-10 leading-relaxed max-w-3xl mx-auto">
+        <p className="text-base sm:text-lg md:text-xl text-slate-600 mb-8 sm:mb-10 leading-relaxed max-w-3xl mx-auto">
           D&P Psikoloji ve Beslenme Merkezi ile duygusal iyi oluşunuzu güçlendirin, size özel beslenme planlarıyla sürdürülebilir sağlıklı yaşam rutinleri oluşturun.
         </p>
         <button
           onClick={() => nav('contact')}
-          className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white transition-all bg-slate-900 rounded-xl hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600"
+          className="inline-flex w-full sm:w-auto items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-bold text-white transition-all bg-slate-900 rounded-xl hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600"
         >
           İlk Görüşmeyi Planlayın
           <ChevronRight className="w-5 h-5 ml-2" />
@@ -404,7 +404,7 @@ function ContactView() {
         <p className="text-xl text-slate-600">Size en uygun psikolog ve diyetisyen programını birlikte planlayalım.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 sm:gap-8">
         <div className="lg:col-span-3 bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -561,9 +561,9 @@ function ChatWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
       {isOpen && (
-        <div className="absolute bottom-20 right-0 w-[350px] max-w-[calc(100vw-3rem)] h-[450px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
+        <div className="absolute bottom-16 sm:bottom-20 right-0 w-[calc(100vw-2rem)] sm:w-[350px] max-w-[calc(100vw-2rem)] h-[70vh] sm:h-[450px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
           <div className="bg-slate-900 text-white p-4 flex justify-between items-center">
             <div className="flex items-center">
               <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center font-bold mr-3">D</div>
