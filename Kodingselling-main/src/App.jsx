@@ -7,6 +7,7 @@ import {
   MapPin, Mail, Phone, Clock, MessageSquare,
   Send, X, Menu, ChevronDown, ChevronUp
 } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
 import { supabase, supabaseConfig } from './lib/supabase';
 
 // --- DATA ---
@@ -187,6 +188,7 @@ export default function App() {
       </footer>
 
       <ChatWidget />
+      <Analytics />
     </div>
   );
 }
