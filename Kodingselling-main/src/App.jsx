@@ -7,6 +7,7 @@ import {
   MapPin, Mail, Phone, Clock, MessageSquare,
   Send, X, Menu, ChevronDown, ChevronUp
 } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
 import { supabase, supabaseConfig } from './lib/supabase';
 
 // --- DATA ---
@@ -103,10 +104,10 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center cursor-pointer group" onClick={() => nav('home')}>
-              <span className="text-3xl font-extrabold tracking-tighter text-slate-900 lowercase group-hover:text-indigo-950 transition-colors">
+              <span className="text-4xl font-extrabold tracking-tighter text-slate-900 lowercase group-hover:text-indigo-950 transition-colors">
                 d&p
               </span>
-              <span className="text-4xl text-emerald-500 leading-none">.</span>
+              <span className="text-5xl text-emerald-500 leading-none">.</span>
             </div>
 
             <div className="hidden md:flex space-x-8">
@@ -161,7 +162,7 @@ export default function App() {
         )}
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {activeTab === 'home' && <HomeView nav={nav} />}
         {activeTab === 'services' && <ServicesView />}
         {activeTab === 'expertise' && <ExpertiseView />}
@@ -176,17 +177,18 @@ export default function App() {
             <button
               type="button"
               onClick={() => nav('admin')}
-              className="text-2xl font-extrabold tracking-tighter text-white lowercase hover:text-indigo-300 transition-colors"
+              className="text-3xl font-extrabold tracking-tighter text-white lowercase hover:text-indigo-300 transition-colors"
             >
               d&p<span className="text-emerald-500">.</span>
             </button>
             <p className="text-sm mt-2">Ruhsal denge ve sürdürülebilir beslenmeyi aynı çatı altında buluşturuyoruz.</p>
           </div>
-          <div className="text-sm">&copy; {new Date().getFullYear()} D&P Psikoloji ve Beslenme Merkezi. Tüm Hakları Saklıdır.</div>
+          <div className="text-sm text-center md:text-right">&copy; {new Date().getFullYear()} D&P Psikoloji ve Beslenme Merkezi. Tüm Hakları Saklıdır.</div>
         </div>
       </footer>
 
       <ChatWidget />
+      <Analytics />
     </div>
   );
 }
@@ -206,16 +208,16 @@ function HomeView({ nav }) {
           <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
           Bilimsel Yaklaşımla Bütüncül İyi Oluş
         </div>
-        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
           Psikolog ve Diyetisyen Desteğiyle<br className="hidden md:block" /> {' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-fuchsia-600">Dengeli Bir Zihin ve Sağlıklı Bir Yaşam</span> İnşa Ediyoruz.
         </h1>
-        <p className="text-xl text-slate-600 mb-10 leading-relaxed max-w-3xl mx-auto">
+        <p className="text-base sm:text-lg md:text-xl text-slate-600 mb-8 sm:mb-10 leading-relaxed max-w-3xl mx-auto">
           D&P Psikoloji ve Beslenme Merkezi ile duygusal iyi oluşunuzu güçlendirin, size özel beslenme planlarıyla sürdürülebilir sağlıklı yaşam rutinleri oluşturun.
         </p>
         <button
           onClick={() => nav('contact')}
-          className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white transition-all bg-slate-900 rounded-xl hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600"
+          className="inline-flex w-full sm:w-auto items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-bold text-white transition-all bg-slate-900 rounded-xl hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600"
         >
           İlk Görüşmeyi Planlayın
           <ChevronRight className="w-5 h-5 ml-2" />
@@ -331,7 +333,7 @@ function AboutView() {
         <div className="p-10 md:p-14 relative">
           <div className="absolute -top-12 left-10 w-24 h-24 bg-white rounded-2xl shadow-lg border border-slate-100 flex items-center justify-center">
             <span className="text-2xl font-extrabold text-slate-900 lowercase">
-              dzy<span className="text-emerald-500">.</span>
+              d&p<span className="text-emerald-500">.</span>
             </span>
           </div>
 
@@ -404,13 +406,13 @@ function ContactView() {
         <p className="text-xl text-slate-600">Size en uygun psikolog ve diyetisyen programını birlikte planlayalım.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 sm:gap-8">
         <div className="lg:col-span-3 bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Ad Soyad</label>
-                <input required type="text" value={formData.full_name} onChange={(e) => setFormData((p) => ({ ...p, full_name: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="John Doe" />
+                <input required type="text" value={formData.full_name} onChange={(e) => setFormData((p) => ({ ...p, full_name: e.target.value }))} className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors" placeholder="Ayşe Yılmaz" />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Yaş / Meslek</label>
@@ -493,7 +495,7 @@ function ContactView() {
                   <Phone className="w-6 h-6 text-indigo-400 mt-1 mr-4 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-slate-200">Telefon</p>
-                    <p className="text-slate-400 mt-1">+90 (232) 000 00 00</p>
+                    <p className="text-slate-400 mt-1">+90 555 208 3092</p>
                   </div>
                 </div>
 
@@ -509,7 +511,7 @@ function ContactView() {
 
             <div className="mt-12 pt-8 border-t border-slate-800">
               <span className="text-3xl font-extrabold tracking-tighter text-white lowercase">
-                dzy<span className="text-emerald-500">.</span>
+                d&p<span className="text-emerald-500">.</span>
               </span>
             </div>
           </div>
@@ -561,9 +563,9 @@ function ChatWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
       {isOpen && (
-        <div className="absolute bottom-20 right-0 w-[350px] max-w-[calc(100vw-3rem)] h-[450px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
+        <div className="absolute bottom-16 sm:bottom-20 right-0 w-[calc(100vw-2rem)] sm:w-[350px] max-w-[calc(100vw-2rem)] h-[70vh] sm:h-[450px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
           <div className="bg-slate-900 text-white p-4 flex justify-between items-center">
             <div className="flex items-center">
               <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center font-bold mr-3">D</div>
@@ -642,9 +644,20 @@ function AdminView() {
 
   const login = (e) => {
     e.preventDefault();
+    const hasAdminCredentials = Boolean(supabaseConfig.adminUser && supabaseConfig.adminPass);
+
+    if (!hasAdminCredentials) {
+      setAdminError('Admin girişi için VITE_ADMIN ve VITE_PASS ortam değişkenlerini tanımlayın.');
+      return;
+    }
+
     if (username === supabaseConfig.adminUser && password === supabaseConfig.adminPass) {
       setIsAuthed(true);
+      setAdminError('');
+      return;
     }
+
+    setAdminError('Kullanıcı adı veya şifre hatalı.');
   };
 
   useEffect(() => {
@@ -669,6 +682,7 @@ function AdminView() {
       <div className="max-w-lg mx-auto bg-white border border-slate-200 rounded-2xl p-8">
         <h2 className="text-2xl font-bold mb-4">Admin Girişi</h2>
         <form onSubmit={login} className="space-y-4">
+          {adminError && <p className="text-sm font-medium text-rose-600">{adminError}</p>}
           <input className="w-full border rounded-lg px-3 py-2" placeholder="Admin" value={username} onChange={(e) => setUsername(e.target.value)} />
           <input type="password" className="w-full border rounded-lg px-3 py-2" placeholder="Şifre" value={password} onChange={(e) => setPassword(e.target.value)} />
           <button type="submit" className="w-full py-2 bg-slate-900 text-white rounded-lg">Giriş Yap</button>
