@@ -153,8 +153,88 @@ const pages = {
     date: '2025-06-30',
     tags: ['çocuk beslenmesi', 'yemek seçme', 'ebeveyn rehberi', 'sağlıklı beslenme'],
     image: blogImg('cocuk-beslenmesi')
+  },
+  '/site-haritasi': {
+    title: 'Site Haritası | D&P Psikoloji ve Beslenme Merkezi | İzmir',
+    desc: 'D&P Psikoloji ve Beslenme Merkezi tüm sayfaların listesi. Psiko-beslenme, blog yazıları, hizmetler ve daha fazlası.',
+    ogTitle: 'Site Haritası | D&P',
+    image: `${domain}/og-image.jpg`
   }
 };
+
+// Blog tag pages
+const allTags = [
+  ['psiko-beslenme', 'Psiko-Beslenme'],
+  ['butuncul-saglik', 'Bütüncül Sağlık'],
+  ['psikolog', 'Psikolog'],
+  ['diyetisyen', 'Diyetisyen'],
+  ['duygusal-yeme', 'Duygusal Yeme'],
+  ['stres-yonetimi', 'Stres Yönetimi'],
+  ['yeme-bozuklugu', 'Yeme Bozukluğu'],
+  ['terapi', 'Terapi'],
+  ['online-terapi', 'Online Terapi'],
+  ['uzaktan-terapi', 'Uzaktan Terapi'],
+  ['d-p', 'D&P'],
+  ['izmir-psikolog', 'İzmir Psikolog'],
+  ['terapi-rehberi', 'Terapi Rehberi'],
+  ['alsancak', 'Alsancak'],
+  ['uzman-secimi', 'Uzman Seçimi'],
+  ['kortizol', 'Kortizol'],
+  ['beslenme', 'Beslenme'],
+  ['stres', 'Stres'],
+  ['izmir-diyetisyen', 'İzmir Diyetisyen'],
+  ['diyetisyen-rehberi', 'Diyetisyen Rehberi'],
+  ['kilo-yonetimi', 'Kilo Yönetimi'],
+  ['pcos', 'PCOS'],
+  ['polikistik-over', 'Polikistik Over'],
+  ['hormon-beslenme', 'Hormon Beslenme'],
+  ['insulin-direnci', 'İnsülin Direnci'],
+  ['kadin-sagligi', 'Kadın Sağlığı'],
+  ['mindful-eating', 'Mindful Eating'],
+  ['bilincli-yeme', 'Bilinçli Yeme'],
+  ['farkindalik', 'Farkındalık'],
+  ['yeme-bozuklugu', 'Yeme Bozukluğu'],
+  ['saglikli-beslenme', 'Sağlıklı Beslenme'],
+  ['sosyal-kaygi', 'Sosyal Kaygı'],
+  ['kaygi-bozuklugu', 'Kaygı Bozukluğu'],
+  ['bdt', 'BDT'],
+  ['depresyon', 'Depresyon'],
+  ['omega-3', 'Omega-3'],
+  ['bagirsak-beyin-ekseni', 'Bağırsak-Beyin Ekseni'],
+  ['ruh-sagligi', 'Ruh Sağlığı'],
+  ['cocuk-beslenmesi', 'Çocuk Beslenmesi'],
+  ['yemek-secme', 'Yemek Seçme'],
+  ['ebeveyn-rehberi', 'Ebeveyn Rehberi'],
+  ['aile', 'Aile']
+];
+
+allTags.forEach(([slug, label]) => {
+  pages[`/blog/etiket/${slug}`] = {
+    title: `${label} Yazıları | D&P Psikoloji ve Beslenme Blogu`,
+    desc: `"${label}" etiketli blog yazıları. Psiko-beslenme, psikoloji ve beslenme alanında ${label.toLowerCase()} hakkında bilimsel rehberler.`,
+    ogTitle: `${label} Yazıları | D&P Blog`,
+    image: `${domain}/og-image.jpg`
+  };
+});
+
+// Blog category pages
+const categories = [
+  ['psiko-beslenme', 'Psiko-Beslenme'],
+  ['duygusal-yeme', 'Duygusal Yeme'],
+  ['online-terapi', 'Online Terapi'],
+  ['rehber', 'Rehber'],
+  ['beslenme', 'Beslenme'],
+  ['psikoloji', 'Psikoloji']
+];
+
+categories.forEach(([slug, label]) => {
+  pages[`/blog/kategori/${slug}`] = {
+    title: `${label} Kategorisi | D&P Psikoloji ve Beslenme Blogu`,
+    desc: `${label} kategorisindeki blog yazıları. Psikoloji ve beslenme alanında ${label.toLowerCase()} ile ilgili güncel içerikler.`,
+    ogTitle: `${label} | D&P Blog`,
+    image: `${domain}/og-image.jpg`
+  };
+});
 
 export async function prerender(data) {
   const { url } = data;
@@ -171,7 +251,7 @@ export async function prerender(data) {
 
   const fullUrl = `${domain}${url}`;
 
-    const isBlog = url.startsWith('/blog/');
+    const isBlogPost = url.startsWith('/blog/') && !url.includes('/etiket/') && !url.includes('/kategori/');
     const isAdmin = url === '/admin';
     const pageImage = page.image || `${domain}/og-image.jpg`;
 
@@ -187,7 +267,7 @@ export async function prerender(data) {
       { type: 'link', props: { rel: 'canonical', href: fullUrl } }
     ]);
 
-    if (isBlog) {
+    if (isBlogPost) {
       elements.add({ type: 'meta', props: { property: 'article:published_time', content: page.date || '2025-01-01' } });
       elements.add({ type: 'meta', props: { property: 'article:author', content: 'D&P Psikoloji ve Beslenme Merkezi' } });
       if (page.tags) {

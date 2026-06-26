@@ -778,6 +778,16 @@ const blogPosts = [
   }
 ];
 
+const slugify = (str) => str
+  .toLowerCase()
+  .replace(/ç/g, 'c').replace(/ş/g, 's').replace(/ğ/g, 'g')
+  .replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ı/g, 'i')
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-+|-+$/g, '');
+
+const allTags = [...new Set(blogPosts.flatMap(p => p.tags))];
+const tagSlugMap = Object.fromEntries(allTags.map(t => [slugify(t), t]));
+
 // --- COMPONENTS ---
 
 function Navbar() {
@@ -1770,6 +1780,175 @@ function ChatWidget() {
   );
 }
 
+function BlogTagPage() {
+  const { tag } = useParams();
+  const displayTag = tagSlugMap[tag] || tag;
+  usePageTitle(`#${displayTag} Yazıları | D&P Psikoloji ve Beslenme Blogu`);
+  const filteredPosts = blogPosts.filter(p => p.tags.some(t => slugify(t) === tag));
+
+  return (
+    <div className="animate-in fade-in duration-500 max-w-5xl mx-auto">
+      <div className="mb-8">
+        <Link to="/blog" className="text-sm text-indigo-600 hover:underline inline-flex items-center mb-4">
+          <ChevronRight className="w-4 h-4 rotate-180 mr-1" /> Blog'a Dön
+        </Link>
+        <h1 className="text-3xl font-extrabold text-slate-900 mb-2">#{displayTag}</h1>
+        <p className="text-slate-600">{filteredPosts.length} yazı bulundu</p>
+      </div>
+      {filteredPosts.length === 0 ? (
+        <p className="text-slate-500">Bu etiketle henüz yazı bulunmuyor.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {filteredPosts.map(post => (
+            <Link key={post.slug} to={`/blog/${post.slug}`}
+              className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all group"
+            >
+              <div className="h-48 bg-slate-900 overflow-hidden relative">
+                <img src={post.image} alt={post.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              </div>
+              <div className="p-6">
+                <div className="flex items-center gap-3 text-xs text-slate-500 mb-3">
+                  <span className="font-medium uppercase tracking-wider text-indigo-600">{post.category}</span>
+                  <span>•</span>
+                  <span>{post.date}</span>
+                </div>
+                <h2 className="text-lg font-bold text-slate-900 mb-3 leading-tight group-hover:text-indigo-600 transition-colors">{post.title}</h2>
+                <p className="text-sm text-slate-600 leading-relaxed">{post.excerpt}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function BlogCategoryPage() {
+  const { kategori } = useParams();
+  const catNames = { 'psiko-beslenme': 'Psiko-Beslenme', 'duygusal-yeme': 'Duygusal Yeme', 'online-terapi': 'Online Terapi', 'rehber': 'Rehber', 'beslenme': 'Beslenme', 'psikoloji': 'Psikoloji' };
+  const displayName = catNames[kategori] || kategori;
+  usePageTitle(`${displayName} Kategorisi | D&P Psikoloji ve Beslenme Blogu`);
+  const filteredPosts = blogPosts.filter(p => p.category === kategori);
+
+  return (
+    <div className="animate-in fade-in duration-500 max-w-5xl mx-auto">
+      <div className="mb-8">
+        <Link to="/blog" className="text-sm text-indigo-600 hover:underline inline-flex items-center mb-4">
+          <ChevronRight className="w-4 h-4 rotate-180 mr-1" /> Blog'a Dön
+        </Link>
+        <h1 className="text-3xl font-extrabold text-slate-900 mb-2">{displayName}</h1>
+        <p className="text-slate-600">{filteredPosts.length} yazı bulundu</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {filteredPosts.map(post => (
+          <Link key={post.slug} to={`/blog/${post.slug}`}
+            className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all group"
+          >
+            <div className="h-48 bg-slate-900 overflow-hidden relative">
+              <img src={post.image} alt={post.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            </div>
+            <div className="p-6">
+              <h2 className="text-lg font-bold text-slate-900 mb-3 leading-tight group-hover:text-indigo-600 transition-colors">{post.title}</h2>
+              <p className="text-sm text-slate-600 leading-relaxed">{post.excerpt}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SitemapPage() {
+  usePageTitle('Site Haritası | D&P Psikoloji ve Beslenme');
+  const domain = 'https://diyetizmir.fit';
+  const sitePages = [
+    { path: '/', label: 'Ana Sayfa', desc: 'Psiko-beslenme merkezi ana sayfa' },
+    { path: '/hizmetler', label: 'Hizmetlerimiz', desc: 'Psikolojik danışmanlık ve beslenme hizmetleri' },
+    { path: '/psiko-beslenme', label: 'Psiko-Beslenme Programı', desc: 'Psikolog ve diyetisyen entegre program' },
+    { path: '/duygusal-yeme', label: 'Duygusal Yeme Terapisi', desc: 'Duygusal yeme bozukluğu terapisi' },
+    { path: '/online-terapi', label: 'Online Terapi', desc: 'Online psikolog ve diyetisyen seansları' },
+    { path: '/uzmanlik-alanlari', label: 'Uzmanlık Alanları', desc: 'Klinik psikoloji ve beslenme uzmanlıkları' },
+    { path: '/hakkimizda', label: 'Hakkımızda', desc: 'D&P ekibi ve bütüncül yaklaşım' },
+    { path: '/iletisim', label: 'İletişim', desc: 'Randevu ve iletişim bilgileri' },
+    { path: '/blog', label: 'Blog Ana Sayfası', desc: 'Psiko-beslenme blog yazıları' },
+    { path: '/site-haritasi', label: 'Site Haritası', desc: 'Tüm sayfaların listesi' }
+  ];
+
+  const tagPages = allTags.map(t => ({
+    slug: slugify(t),
+    label: `#${t}`,
+    desc: `"${t}" etiketli blog yazıları`
+  }));
+
+  const categoryPages = [
+    { slug: 'psiko-beslenme', label: 'Psiko-Beslenme', desc: 'Psiko-beslenme kategorisi yazıları' },
+    { slug: 'duygusal-yeme', label: 'Duygusal Yeme', desc: 'Duygusal yeme kategorisi yazıları' },
+    { slug: 'online-terapi', label: 'Online Terapi', desc: 'Online terapi kategorisi yazıları' },
+    { slug: 'rehber', label: 'Rehber', desc: 'Rehber kategorisi yazıları' },
+    { slug: 'beslenme', label: 'Beslenme', desc: 'Beslenme kategorisi yazıları' },
+    { slug: 'psikoloji', label: 'Psikoloji', desc: 'Psikoloji kategorisi yazıları' }
+  ];
+
+  return (
+    <div className="animate-in fade-in duration-500 max-w-4xl mx-auto">
+      <h1 className="text-4xl font-extrabold text-slate-900 mb-2">Site Haritası</h1>
+      <p className="text-lg text-slate-600 mb-10">Tüm sayfaların listesi — aradığınızı kolayca bulun.</p>
+
+      <section className="mb-10">
+        <h2 className="text-2xl font-bold text-slate-800 mb-4">📄 Ana Sayfalar</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {sitePages.map(p => (
+            <Link key={p.path} to={p.path}
+              className="block bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
+            >
+              <h3 className="font-bold text-indigo-700 mb-1">{p.label}</h3>
+              <p className="text-sm text-slate-500">{p.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-2xl font-bold text-slate-800 mb-4">🏷️ Etiket Sayfaları</h2>
+        <div className="flex flex-wrap gap-3">
+          {tagPages.map(p => (
+            <Link key={p.slug} to={`/blog/etiket/${p.slug}`}
+              className="bg-white rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all"
+            >{p.label}</Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-2xl font-bold text-slate-800 mb-4">📂 Kategori Sayfaları</h2>
+        <div className="flex flex-wrap gap-3">
+          {categoryPages.map(p => (
+            <Link key={p.slug} to={`/blog/kategori/${p.slug}`}
+              className="bg-white rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all"
+            >{p.label}</Link>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-bold text-slate-800 mb-4">📝 Blog Yazıları</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {blogPosts.map(post => (
+            <Link key={post.slug} to={`/blog/${post.slug}`}
+              className="block bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
+            >
+              <h3 className="font-bold text-slate-900 mb-1">{post.title}</h3>
+              <p className="text-xs text-slate-500">{post.date} · {post.readTime} dk okuma</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
 // --- MAIN APP ---
 
 function AppRoutes() {
@@ -1785,6 +1964,9 @@ function AppRoutes() {
       <Route path="/iletisim" element={<ContactPage />} />
       <Route path="/blog" element={<BlogPage />} />
       <Route path="/blog/:slug" element={<BlogPostPage />} />
+      <Route path="/blog/etiket/:tag" element={<BlogTagPage />} />
+      <Route path="/blog/kategori/:kategori" element={<BlogCategoryPage />} />
+      <Route path="/site-haritasi" element={<SitemapPage />} />
       <Route path="/admin" element={<AdminPage />} />
       <Route path="*" element={
         <div className="text-center py-20">
