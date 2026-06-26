@@ -101,7 +101,7 @@ const blogPosts = [
     date: '2025-01-15',
     readTime: 8,
     category: 'psiko-beslenme',
-    image: '/blog/psiko-beslenme-nedir.jpg',
+    image: '/blog/psiko-beslenme-nedir.svg',
     tags: ['psiko-beslenme', 'bütüncül sağlık', 'psikolog', 'diyetisyen'],
     content: (
       <>
@@ -186,7 +186,7 @@ const blogPosts = [
     date: '2025-01-10',
     readTime: 9,
     category: 'duygusal-yeme',
-    image: '/blog/duygusal-yeme.jpg',
+    image: '/blog/duygusal-yeme.svg',
     tags: ['duygusal yeme', 'stres yönetimi', 'yeme bozukluğu', 'terapi'],
     content: (
       <>
@@ -256,7 +256,7 @@ const blogPosts = [
     date: '2025-01-05',
     readTime: 6,
     category: 'online-terapi',
-    image: '/blog/online-terapi.jpg',
+    image: '/blog/online-terapi.svg',
     tags: ['online terapi', 'psikolog', 'uzaktan terapi', 'D&P'],
     content: (
       <>
@@ -309,7 +309,7 @@ const blogPosts = [
     date: '2025-01-01',
     readTime: 7,
     category: 'rehber',
-    image: '/blog/izmir-psikolog.jpg',
+    image: '/blog/izmir-psikolog.svg',
     tags: ['izmir psikolog', 'terapi rehberi', 'alsancak', 'uzman seçimi'],
     content: (
       <>
@@ -356,7 +356,7 @@ const blogPosts = [
     date: '2025-06-01',
     readTime: 8,
     category: 'psiko-beslenme',
-    image: '/blog/stres-ve-beslenme.jpg',
+    image: '/blog/stres-ve-beslenme.svg',
     tags: ['stres yönetimi', 'kortizol', 'beslenme', 'psiko-beslenme', 'stres'],
     content: (
       <>
@@ -424,7 +424,7 @@ const blogPosts = [
     date: '2025-06-05',
     readTime: 7,
     category: 'rehber',
-    image: '/blog/izmir-diyetisyen.jpg',
+    image: '/blog/izmir-diyetisyen.svg',
     tags: ['izmir diyetisyen', 'diyetisyen rehberi', 'alsancak', 'kilo yönetimi', 'beslenme'],
     content: (
       <>
@@ -474,7 +474,7 @@ const blogPosts = [
     date: '2025-06-10',
     readTime: 9,
     category: 'beslenme',
-    image: '/blog/pcos-beslenme.jpg',
+    image: '/blog/pcos-beslenme.svg',
     tags: ['PCOS', 'polikistik over', 'hormon beslenme', 'insülin direnci', 'kadin sagligi'],
     content: (
       <>
@@ -524,7 +524,7 @@ const blogPosts = [
     date: '2025-06-15',
     readTime: 7,
     category: 'beslenme',
-    image: '/blog/mindful-eating.jpg',
+    image: '/blog/mindful-eating.svg',
     tags: ['mindful eating', 'bilinçli yeme', 'farkindalik', 'yeme bozuklugu', 'saglikli beslenme'],
     content: (
       <>
@@ -579,7 +579,7 @@ const blogPosts = [
     date: '2025-06-20',
     readTime: 8,
     category: 'psikoloji',
-    image: '/blog/sosyal-kaygi.jpg',
+    image: '/blog/sosyal-kaygi.svg',
     tags: ['sosyal kaygi', 'kaygi bozuklugu', 'terapi', 'online terapi', 'BDT'],
     content: (
       <>
@@ -661,7 +661,7 @@ const blogPosts = [
     date: '2025-06-25',
     readTime: 9,
     category: 'psiko-beslenme',
-    image: '/blog/depresyon-beslenme.jpg',
+    image: '/blog/depresyon-beslenme.svg',
     tags: ['depresyon', 'beslenme', 'omega-3', 'bagirsak-beyin ekseni', 'ruh sagligi'],
     content: (
       <>
@@ -720,7 +720,7 @@ const blogPosts = [
     date: '2025-06-30',
     readTime: 7,
     category: 'beslenme',
-    image: '/blog/cocuk-beslenmesi.jpg',
+    image: '/blog/cocuk-beslenmesi.svg',
     tags: ['cocuk beslenmesi', 'yemek seçme', 'ebeveyn rehberi', 'saglikli beslenme', 'aile'],
     content: (
       <>
@@ -1437,8 +1437,9 @@ function BlogPage() {
             to={`/blog/${post.slug}`}
             className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all group"
           >
-            <div className="h-48 bg-gradient-to-br from-indigo-100 to-fuchsia-100 flex items-center justify-center">
-              <BookOpen className="w-12 h-12 text-indigo-400 group-hover:text-indigo-600 transition-colors" />
+            <div className="h-48 bg-slate-900 overflow-hidden relative">
+              <img src={post.image} alt={post.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
             <div className="p-6">
               <div className="flex items-center gap-3 text-xs text-slate-500 mb-3">
