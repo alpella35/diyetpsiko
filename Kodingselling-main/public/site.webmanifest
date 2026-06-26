@@ -1,0 +1,12 @@
+{
+  "name": "D&P Psikoloji ve Beslenme Merkezi",
+  "short_name": "D&P",
+  "description": "Psikolog ve diyetisyen desteğiyle psiko-beslenme programı. İzmir Alsancak'ta bireysel terapi, duygusal yeme danışmanlığı ve online seans.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
