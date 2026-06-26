@@ -1527,6 +1527,39 @@ function BlogPostPage() {
         <div className="max-w-none space-y-4 text-base text-slate-700 leading-relaxed">
           {post.content || <p className="text-lg text-slate-600 leading-relaxed">{post.excerpt}</p>}
         </div>
+        <RelatedPosts current={post} allPosts={blogPosts} />
+      </div>
+    </div>
+  );
+}
+
+function RelatedPosts({ current, allPosts }) {
+  const related = allPosts
+    .filter(p => p.slug !== current.slug)
+    .map(p => ({
+      ...p,
+      score: (p.category === current.category ? 2 : 0) +
+        p.tags.filter(t => current.tags.includes(t)).length
+    }))
+    .filter(p => p.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+
+  if (!related.length) return null;
+
+  return (
+    <div className="mt-10 pt-8 border-t border-slate-200">
+      <h3 className="text-xl font-bold text-slate-900 mb-6">İlgili Yazılar</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {related.map(p => (
+          <Link key={p.slug} to={`/blog/${p.slug}`}
+            className="block bg-slate-50 rounded-xl p-4 hover:bg-indigo-50 hover:-translate-y-0.5 transition-all border border-slate-100"
+          >
+            <span className="text-xs font-medium uppercase tracking-wider text-indigo-600">{p.category}</span>
+            <h4 className="text-sm font-bold text-slate-900 mt-1 leading-tight group-hover:text-indigo-600">{p.title}</h4>
+            <p className="text-xs text-slate-500 mt-2">{p.excerpt.slice(0, 80)}...</p>
+          </Link>
+        ))}
       </div>
     </div>
   );
@@ -1860,6 +1893,306 @@ function BlogCategoryPage() {
   );
 }
 
+const locationData = [
+  {
+    slug: 'alsancak-psikolog',
+    title: 'Alsancak Psikolog',
+    desc: 'Alsancak psikolog arayışınızda uzman klinik psikologlarımızla bireysel terapi, kaygı bozukluğu ve duygusal yeme danışmanlığı hizmeti sunuyoruz.',
+    fullDesc: 'Alsancak, İzmir\'in en merkezi ve hareketli semtlerinden biridir. Kıbrıs Şehitleri Caddesi, Kordon ve çevresindeki yoğun iş ve sosyal yaşam, beraberinde stres ve kaygı gibi psikolojik zorlukları da getirebilir. D&P Psikoloji ve Beslenme Merkezi olarak Alsancak\'ta uzman psikologlarımızla bireysel terapi hizmeti sunuyoruz.',
+    about: 'Alsancak, İzmir\'in kalbi olarak bilinir. Tarihi binaları, modern kafeleri ve iş merkezleriyle hem yerel halkın hem de öğrencilerin tercih ettiği bir bölgedir. Yoğun yaşam temposu içinde psikolojik destek almak, ruh sağlığınızı korumak için önemli bir adımdır.',
+    keywords: ['Alsancak psikolog', 'Alsancak terapi', 'Alsancak psikolojik danışmanlık']
+  },
+  {
+    slug: 'karsiyaka-diyetisyen',
+    title: 'Karşıyaka Diyetisyen',
+    desc: 'Karşıyaka diyetisyen desteği ile kilo yönetimi, insülin direnci ve sağlıklı beslenme programları. Uzman diyetisyenlerimizle size özel planlar.',
+    fullDesc: 'Karşıyaka, İzmir\'in en köklü ve kalabalık ilçelerinden biridir. Bostanlı sahilinden Atakent\'e kadar geniş bir alana yayılan ilçede sağlıklı beslenme bilinci her geçen gün artmaktadır. D&P Merkezi olarak Karşıyaka\'da yaşayan danışanlarımıza online ve yüz yüze diyetisyen desteği sağlıyoruz.',
+    about: 'Karşıyaka, İzmir\'in kuzey yakasının en önemli ilçesidir. Bostanlı, Atakent, Mavişehir gibi popüler mahalleleriyle bilinen Karşıyaka\'da sağlıklı yaşam ve beslenme danışmanlığına olan ilgi yüksektir.',
+    keywords: ['Karşıyaka diyetisyen', 'Karşıyaka beslenme', 'Karşıyaka diyet']
+  },
+  {
+    slug: 'bornova-psikolog',
+    title: 'Bornova Psikolog',
+    desc: 'Bornova psikolog hizmeti ile kaygı, stres, depresyon ve ilişki sorunlarında profesyonel destek. Bornova\'da uzman psikolog ekibimizle yanınızdayız.',
+    fullDesc: 'Bornova, İzmir\'in en büyük ilçelerinden biri olup Ege Üniversitesi ve genç nüfusuyla dikkat çeker. Üniversite öğrencileri ve aileleri için psikolojik danışmanlık hizmetleri büyük önem taşır. D&P Merkezi olarak Bornova\'da yaşayan danışanlarımıza online psikolog desteği sunuyor, ihtiyaç duyduklarında Alsancak merkezimizde yüz yüze görüşme imkanı sağlıyoruz.',
+    about: 'Bornova, Ege Üniversitesi\'ne ev sahipliği yapmasıyla genç bir nüfusa sahiptir. Öğrencilik döneminde yaşanan kaygı, sınav stresi ve uyum sorunları gibi konularda psikolojik destek almak başarıyı ve yaşam kalitesini artırır.',
+    keywords: ['Bornova psikolog', 'Bornova terapi', 'Bornova psikolojik danışmanlık']
+  },
+  {
+    slug: 'karsiyaka-psikolog',
+    title: 'Karşıyaka Psikolog',
+    desc: 'Karşıyaka psikolog arayışınızda bireysel terapi, çift terapisi ve psiko-beslenme desteği. Uzman klinik psikologlarımızla Karşıyaka\'da yanınızdayız.',
+    fullDesc: 'Karşıyaka, İzmir\'in kuzey sahillerinde yer alan, geniş yeşil alanları ve sahil bandıyla huzurlu bir yaşam sunan bir ilçedir. Ancak yoğun iş temposu, trafik ve şehir yaşamının getirdiği zorluklar psikolojik destek ihtiyacını beraberinde getirir. D&P Merkezi olarak Karşıyaka\'da yaşayan danışanlarımıza online psikolog desteği sağlıyor, Alsancak merkezimizde yüz yüze görüşme imkanı sunuyoruz.',
+    about: 'Karşıyaka\'nın Bostanlı, Atakent, Örnekköy ve Alaybey gibi mahallelerinde yaşayanlar için psikolojik danışmanlık hizmetlerine erişim önemlidir. Özellikle kaygı bozuklukları, depresyon ve ilişki sorunları alanında uzman desteği almak mümkündür.',
+    keywords: ['Karşıyaka psikolog', 'Karşıyaka terapi', 'Karşıyaka psikolojik destek']
+  },
+  {
+    slug: 'alsancak-diyetisyen',
+    title: 'Alsancak Diyetisyen',
+    desc: 'Alsancak diyetisyen desteği ile kişiye özel beslenme programları, kilo yönetimi ve sağlıklı yaşam danışmanlığı. Uzman diyetisyenlerimizle tanışın.',
+    fullDesc: 'Alsancak, İzmir\'in gastronomi merkezi olarak bilinir. Kıbrıs Şehitleri Caddesi ve çevresindeki restoranlar, kafeler ve sokak lezzetleri sağlıklı beslenmeyi zorlaştırabilir. D&P Merkezi olarak Alsancak\'ta diyetisyen desteği almak isteyen danışanlarımıza kişiye özel, sürdürülebilir beslenme programları sunuyoruz.',
+    about: 'Alsancak, İzmir\'in en popüler semtlerinden biridir. İş merkezleri, okullar ve sosyal alanlarıyla her yaştan insanın yaşadığı Alsancak\'ta sağlıklı beslenme bilinci giderek yaygınlaşmaktadır.',
+    keywords: ['Alsancak diyetisyen', 'Alsancak beslenme', 'Alsancak diyet']
+  },
+  {
+    slug: 'bornova-diyetisyen',
+    title: 'Bornova Diyetisyen',
+    desc: 'Bornova diyetisyen hizmeti ile kilo kontrolü, insülin direnci ve sağlıklı beslenme alışkanlıkları. Bornova\'da uzman diyetisyen desteği.',
+    fullDesc: 'Bornova, öğrenci nüfusunun yoğun olduğu bir ilçe olarak sağlıksız beslenme alışkanlıklarının yaygın olduğu bir bölgedir. Düzensiz öğünler, hazır gıda tüketimi ve hareketsiz yaşam, kilo alımı ve metabolik sorunları beraberinde getirir. D&P Merkezi olarak Bornova\'da yaşayan danışanlarımıza online diyetisyen desteği sağlıyor, Alsancak merkezimizde yüz yüze görüşme imkanı sunuyoruz.',
+    about: 'Bornova, Ege Üniversitesi başta olmak üzere birçok okul ve hastaneye ev sahipliği yapar. Öğrenciler, akademisyenler ve aileler için sağlıklı beslenme danışmanlığı, yaşam kalitesini artırmada önemli bir rol oynar.',
+    keywords: ['Bornova diyetisyen', 'Bornova beslenme', 'Bornova diyet']
+  }
+];
+
+function ServiceDetailPage() {
+  const { slug } = useParams();
+  const service = servicesData.find(s => s.slug === slug);
+  const navigate = useNavigate();
+
+  const relatedServices = servicesData.filter(s => s.slug !== slug).slice(0, 3);
+  const relatedPosts = blogPosts.filter(p =>
+    p.tags.some(t => service && service.title.toLowerCase().includes(t.toLowerCase()))
+  ).slice(0, 3);
+
+  usePageTitle(service ? service.title : 'Hizmet Bulunamadı');
+
+  if (!service) {
+    return (
+      <div className="text-center py-20">
+        <h1 className="text-2xl font-bold text-slate-900">Hizmet bulunamadı</h1>
+        <Link to="/hizmetler" className="text-indigo-600 hover:underline mt-4 inline-block">Tüm hizmetlere dön</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="animate-in fade-in duration-500 max-w-4xl mx-auto">
+      <nav className="flex items-center gap-2 text-sm text-slate-500 mb-8">
+        <Link to="/" className="hover:text-indigo-600 transition-colors">Ana Sayfa</Link>
+        <ChevronRight className="w-4 h-4" />
+        <Link to="/hizmetler" className="hover:text-indigo-600 transition-colors">Hizmetler</Link>
+        <ChevronRight className="w-4 h-4" />
+        <span className="text-slate-900 font-medium">{service.title}</span>
+      </nav>
+
+      <div className="flex items-center gap-4 mb-6">
+        <div className="p-4 bg-indigo-50 rounded-2xl">{service.icon}</div>
+        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900">{service.title}</h1>
+      </div>
+
+      <p className="text-lg text-slate-600 leading-relaxed mb-8">{service.desc}</p>
+
+      <div className="bg-white rounded-3xl p-8 md:p-10 border border-slate-200 mb-8">
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">Hizmet Hakkında</h2>
+        <p className="text-slate-600 leading-relaxed">{service.fullDesc}</p>
+      </div>
+
+      <div className="bg-indigo-50 rounded-3xl p-8 md:p-10 border border-indigo-100 mb-8">
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">Bu Hizmet Size Ne Sağlar?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-start gap-3">
+            <CheckCircle className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+            <p className="text-slate-700">Uzman psikolog ve diyetisyen ekibiyle birebir çalışma imkanı</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <CheckCircle className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+            <p className="text-slate-700">Size özel kişiselleştirilmiş program ve haftalık takip</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <CheckCircle className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+            <p className="text-slate-700">Yüz yüze veya online seans seçenekleri</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <CheckCircle className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+            <p className="text-slate-700">Gizlilik odaklı, etik ve güvenli süreç yönetimi</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 md:p-10 border border-slate-200 mb-8">
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">Nasıl İlerliyoruz?</h2>
+        <div className="space-y-6">
+          <div className="flex gap-4">
+            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-indigo-700">1</div>
+            <div>
+              <h3 className="font-bold text-slate-900">Ön Görüşme ve Değerlendirme</h3>
+              <p className="text-slate-600 text-sm">İhtiyaçlarınızı, hedeflerinizi ve beklentilerinizi detaylıca dinliyor, size en uygun programı belirliyoruz.</p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-emerald-700">2</div>
+            <div>
+              <h3 className="font-bold text-slate-900">Kişiselleştirilmiş Planlama</h3>
+              <p className="text-slate-600 text-sm">Değerlendirme sonuçlarına göre size özel bir yol haritası oluşturuyor, hedef ve takvim belirliyoruz.</p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="w-10 h-10 bg-fuchsia-100 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-fuchsia-700">3</div>
+            <div>
+              <h3 className="font-bold text-slate-900">Düzenli Takip ve Güncelleme</h3>
+              <p className="text-slate-600 text-sm">Haftalık görüşmelerle ilerlemenizi ölçüyor, gerektiğinde programı güncelliyoruz.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-gradient-to-br from-indigo-600 to-fuchsia-700 rounded-3xl p-8 md:p-12 text-center text-white mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4">Bu Hizmetten Yararlanmak İçin Hemen Bize Ulaşın</h2>
+        <p className="text-lg text-indigo-100 mb-8">Uzman ekibimiz size en uygun programı belirlemenize yardımcı olsun.</p>
+        <button
+          onClick={() => navigate('/iletisim')}
+          className="inline-flex items-center px-8 py-4 bg-white text-indigo-700 font-bold rounded-xl hover:bg-indigo-50 transition-colors"
+        >
+          Randevu Al <Calendar className="w-5 h-5 ml-2" />
+        </button>
+      </div>
+
+      {relatedServices.length > 0 && (
+        <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200 mb-8">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">Diğer Hizmetlerimiz</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {relatedServices.map(s => (
+              <Link key={s.slug} to={`/hizmetler/${s.slug}`}
+                className="bg-white rounded-xl p-5 border border-slate-200 hover:shadow-md hover:-translate-y-0.5 transition-all"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 bg-slate-50 rounded-lg">{s.icon}</div>
+                  <h3 className="font-bold text-slate-900 text-sm">{s.title}</h3>
+                </div>
+                <p className="text-xs text-slate-500">{s.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {relatedPosts.length > 0 && (
+        <div className="bg-white rounded-3xl p-8 border border-slate-200">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">İlgili Blog Yazıları</h2>
+          <div className="space-y-4">
+            {relatedPosts.map(p => (
+              <Link key={p.slug} to={`/blog/${p.slug}`}
+                className="block bg-slate-50 rounded-xl p-4 border border-slate-100 hover:shadow-md transition-all"
+              >
+                <h3 className="font-bold text-slate-900 mb-1">{p.title}</h3>
+                <p className="text-sm text-slate-500">{p.excerpt.slice(0, 120)}...</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LocationPage() {
+  const { slug } = useParams();
+  const location = locationData.find(l => l.slug === slug);
+  const navigate = useNavigate();
+
+  const relatedServices = servicesData.slice(0, 4);
+
+  usePageTitle(location ? location.title : 'Sayfa Bulunamadı');
+
+  if (!location) {
+    return (
+      <div className="text-center py-20">
+        <h1 className="text-2xl font-bold text-slate-900">Sayfa bulunamadı</h1>
+        <Link to="/" className="text-indigo-600 hover:underline mt-4 inline-block">Ana sayfaya dön</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="animate-in fade-in duration-500 max-w-4xl mx-auto">
+      <nav className="flex items-center gap-2 text-sm text-slate-500 mb-8">
+        <Link to="/" className="hover:text-indigo-600 transition-colors">Ana Sayfa</Link>
+        <ChevronRight className="w-4 h-4" />
+        <span className="text-slate-900 font-medium">{location.title}</span>
+      </nav>
+
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">{location.title}</h1>
+        <p className="text-lg text-slate-600 leading-relaxed">{location.desc}</p>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 md:p-10 border border-slate-200 mb-8">
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">{location.title} Hizmeti</h2>
+        <p className="text-slate-600 leading-relaxed mb-4">{location.fullDesc}</p>
+        <p className="text-slate-600 leading-relaxed">{location.about}</p>
+      </div>
+
+      <div className="bg-indigo-50 rounded-3xl p-8 md:p-10 border border-indigo-100 mb-8">
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">Bölgede Sunduğumuz Hizmetler</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {relatedServices.map(s => (
+            <Link key={s.slug} to={`/hizmetler/${s.slug}`}
+              className="flex items-center gap-3 bg-white rounded-xl p-4 border border-slate-200 hover:shadow-md hover:-translate-y-0.5 transition-all"
+            >
+              <div className="p-2 bg-slate-50 rounded-lg flex-shrink-0">{s.icon}</div>
+              <div>
+                <h3 className="font-bold text-slate-900 text-sm">{s.title}</h3>
+                <p className="text-xs text-slate-500">{s.desc}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 md:p-10 border border-slate-200 mb-8">
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">Neden Bizi Tercih Etmelisiniz?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-start gap-3">
+            <CheckCircle className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+            <p className="text-slate-700">Uzman psikolog ve diyetisyen ekibi</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <CheckCircle className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+            <p className="text-slate-700">Kişiye özel program ve düzenli takip</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <CheckCircle className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+            <p className="text-slate-700">Online ve yüz yüze seans seçenekleri</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <CheckCircle className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
+            <p className="text-slate-700">Gizlilik ve etik değerlere bağlı hizmet</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-gradient-to-br from-indigo-600 to-emerald-700 rounded-3xl p-8 md:p-12 text-center text-white mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4">{location.title} Desteği İçin Bize Ulaşın</h2>
+        <p className="text-lg text-indigo-100 mb-8">Randevu almak ve detaylı bilgi için iletişim formumuzu kullanabilirsiniz.</p>
+        <button
+          onClick={() => navigate('/iletisim')}
+          className="inline-flex items-center px-8 py-4 bg-white text-indigo-700 font-bold rounded-xl hover:bg-indigo-50 transition-colors"
+        >
+          İletişime Geç <Mail className="w-5 h-5 ml-2" />
+        </button>
+      </div>
+
+      <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200">
+        <h2 className="text-2xl font-bold text-slate-900 mb-6">Hizmetlerimiz Hakkında Daha Fazla Bilgi</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Link to="/hizmetler"
+            className="bg-white rounded-xl p-5 border border-slate-200 hover:shadow-md hover:-translate-y-0.5 transition-all"
+          >
+            <h3 className="font-bold text-indigo-700 mb-1">Tüm Hizmetlerimiz</h3>
+            <p className="text-sm text-slate-500">Psikolojik danışmanlık ve beslenme programlarımızı keşfedin.</p>
+          </Link>
+          <Link to="/psiko-beslenme"
+            className="bg-white rounded-xl p-5 border border-slate-200 hover:shadow-md hover:-translate-y-0.5 transition-all"
+          >
+            <h3 className="font-bold text-indigo-700 mb-1">Psiko-Beslenme Programı</h3>
+            <p className="text-sm text-slate-500">Psikolog ve diyetisyenin birlikte çalıştığı entegre program.</p>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SitemapPage() {
   usePageTitle('Site Haritası | D&P Psikoloji ve Beslenme');
   const domain = 'https://diyetizmir.fit';
@@ -1966,6 +2299,8 @@ function AppRoutes() {
       <Route path="/blog/:slug" element={<BlogPostPage />} />
       <Route path="/blog/etiket/:tag" element={<BlogTagPage />} />
       <Route path="/blog/kategori/:kategori" element={<BlogCategoryPage />} />
+      <Route path="/hizmetler/:slug" element={<ServiceDetailPage />} />
+      <Route path="/izmir/:slug" element={<LocationPage />} />
       <Route path="/site-haritasi" element={<SitemapPage />} />
       <Route path="/admin" element={<AdminPage />} />
       <Route path="*" element={

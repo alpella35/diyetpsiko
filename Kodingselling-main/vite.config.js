@@ -73,7 +73,21 @@ export default defineConfig({
         '/blog/kategori/online-terapi',
         '/blog/kategori/rehber',
         '/blog/kategori/beslenme',
-        '/blog/kategori/psikoloji'
+        '/blog/kategori/psikoloji',
+        // service detail pages
+        '/hizmetler/bireysel-psikolojik-danismanlik',
+        '/hizmetler/kisiye-ozel-beslenme',
+        '/hizmetler/psiko-beslenme',
+        '/hizmetler/online-seans',
+        '/hizmetler/kadin-sagligi-beslenme',
+        '/hizmetler/kurumsal-wellbeing',
+        // location pages
+        '/izmir/alsancak-psikolog',
+        '/izmir/karsiyaka-diyetisyen',
+        '/izmir/bornova-psikolog',
+        '/izmir/karsiyaka-psikolog',
+        '/izmir/alsancak-diyetisyen',
+        '/izmir/bornova-diyetisyen'
       ],
       previewMiddlewareFallback: '/404'
     })

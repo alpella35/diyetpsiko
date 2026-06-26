@@ -236,6 +236,44 @@ categories.forEach(([slug, label]) => {
   };
 });
 
+// Service detail pages
+const servicePages = [
+  { slug: 'bireysel-psikolojik-danismanlik', title: 'Bireysel Psikolojik Danışmanlık | D&P | İzmir Psikolog', desc: 'Kaygı, stres, tükenmişlik ve ilişki sorunlarında uzman psikolog desteği. İzmir Alsancak\'ta bireysel terapi seansları ve online psikolojik danışmanlık.' },
+  { slug: 'kisiye-ozel-beslenme', title: 'Kişiye Özel Beslenme Danışmanlığı | D&P | İzmir Diyetisyen', desc: 'Yaşam tarzınıza ve sağlık geçmişinize uygun sürdürülebilir beslenme planları. İzmir Alsancak\'ta uzman diyetisyen desteği ile kilo yönetimi.' },
+  { slug: 'psiko-beslenme', title: 'Psiko-Beslenme Entegre Programı | D&P | İzmir', desc: 'Psikolog ve diyetisyenin birlikte çalıştığı psiko-beslenme programı. Duygusal yeme, kilo yönetimi ve motivasyon için bütüncül takip.' },
+  { slug: 'online-seans', title: 'Online Seans ve Gizli Takip | D&P | Türkiye\'nin Her Yerinden', desc: 'Güvenli altyapı ile online psikolog ve diyetisyen seansları. Türkiye\'nin her yerinden gizlilik odaklı online terapi hizmeti.' },
+  { slug: 'kadin-sagligi-beslenme', title: 'Kadın Sağlığı ve Hormon Dostu Beslenme | D&P | İzmir', desc: 'PCOS, tiroid, menopoz ve adet döngüsüne özel beslenme desteği. Hormon dostu beslenme programları ile kadın sağlığına bütüncül yaklaşım.' },
+  { slug: 'kurumsal-wellbeing', title: 'Kurumsal İyi Oluş Programları | D&P | İzmir', desc: 'Çalışanlar için stres yönetimi, sağlıklı beslenme ve sürdürülebilir performans. Kurumlara özel wellbeing çözümleri.' }
+];
+
+servicePages.forEach(({ slug, title, desc }) => {
+  pages[`/hizmetler/${slug}`] = {
+    title,
+    desc,
+    ogTitle: title.split('|')[0].trim() + ' | D&P',
+    image: `${domain}/og-image.jpg`
+  };
+});
+
+// Location pages
+const locationPages = [
+  { slug: 'alsancak-psikolog', title: 'Alsancak Psikolog | D&P | İzmir Psikolog', desc: 'Alsancak psikolog arayışınızda uzman klinik psikologlarımızla bireysel terapi, kaygı bozukluğu ve duygusal yeme danışmanlığı. İzmir Alsancak\'ta psikolog.' },
+  { slug: 'karsiyaka-diyetisyen', title: 'Karşıyaka Diyetisyen | D&P | İzmir Diyetisyen', desc: 'Karşıyaka diyetisyen desteği ile kilo yönetimi, insülin direnci ve sağlıklı beslenme programları. Karşıyaka\'da uzman diyetisyen.' },
+  { slug: 'bornova-psikolog', title: 'Bornova Psikolog | D&P | İzmir Psikolog', desc: 'Bornova psikolog hizmeti ile kaygı, stres, depresyon ve ilişki sorunlarında profesyonel destek. Bornova\'da uzman psikolog.' },
+  { slug: 'karsiyaka-psikolog', title: 'Karşıyaka Psikolog | D&P | İzmir Psikolog', desc: 'Karşıyaka psikolog arayışınızda bireysel terapi, çift terapisi ve psiko-beslenme desteği. Karşıyaka\'da uzman klinik psikolog.' },
+  { slug: 'alsancak-diyetisyen', title: 'Alsancak Diyetisyen | D&P | İzmir Diyetisyen', desc: 'Alsancak diyetisyen desteği ile kişiye özel beslenme programları, kilo yönetimi ve sağlıklı yaşam danışmanlığı. Alsancak\'ta diyetisyen.' },
+  { slug: 'bornova-diyetisyen', title: 'Bornova Diyetisyen | D&P | İzmir Diyetisyen', desc: 'Bornova diyetisyen hizmeti ile kilo kontrolü, insülin direnci ve sağlıklı beslenme alışkanlıkları. Bornova\'da uzman diyetisyen.' }
+];
+
+locationPages.forEach(({ slug, title, desc }) => {
+  pages[`/izmir/${slug}`] = {
+    title,
+    desc,
+    ogTitle: title.split('|')[0].trim() + ' | D&P',
+    image: `${domain}/og-image.jpg`
+  };
+});
+
 export async function prerender(data) {
   const { url } = data;
   const page = pages[url];
